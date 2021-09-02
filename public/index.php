@@ -35,7 +35,7 @@ $messages = $message_repository->fetch_messages();
         </div>
         <div class="form_control">
           <label for="image">画像</label>
-          <input type="file" name="image">
+          <input id="file" onchange="onChange(this)" type="file" name="image">
         </div>
         <div class="form_control submit">
           <input type="submit">
@@ -44,13 +44,20 @@ $messages = $message_repository->fetch_messages();
       <!-- ----------------------------------- -->
       <hr>
       <?php foreach ($messages as $message): ?>
+        <?php $matches = []; ?>
         <dt id="<?php echo $message['id']; ?>"><?php echo $message['id']; ?></dt>
         <dt>日時</dt>
           <dd><?php echo $message['created_at']; ?></dd>
         <dt>タイトル</dt>
           <dd><?php echo htmlspecialchars($message['title']); ?></dd>
         <dt>内容</dt>
+          <?php if (1 === preg_match('/^>>[0-9]{1,}/', $message['message'], $matches)): ?>
+          <?php $id = substr($matches[0], 2)?>
+          <dd><a href="#<?php echo $id; ?>">>><?php echo $id ?></a></dd>
+          <dd><?php echo htmlspecialchars(preg_replace('/^>>[0-9]{1,}/', '', $message['message'])); ?></dd>
+          <?php else: ?>
           <dd><?php echo htmlspecialchars($message['message']); ?></dd>
+          <?php endif; ?>
           <?php if (!empty($message['image_filename'])): ?>
           <dd><img src="../image/<?php echo htmlspecialchars($message['image_filename']);?>"></dd>
           <?php endif; ?>
