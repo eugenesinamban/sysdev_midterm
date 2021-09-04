@@ -17,7 +17,9 @@ if (isset($_FILES['image']) && !empty($_FILES['image']['tmp_name'])) {
 
 $title = trim($_POST['title']);
 $message = trim($_POST['message']);
-$message_repository->insert_message($title, $message, $image_filename);
+if (!empty($title) && !empty($message)) {
+    $message_repository->insert_message($title, $message, $image_filename);
+}
 header("HTTP/1.1 302 Found");
 header('Location: ./index.php');
 exit;
